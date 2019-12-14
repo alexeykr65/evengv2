@@ -1,0 +1,93 @@
+testbed:
+  credentials:
+    default:
+      username: root
+      password: cisco
+  custom:
+    postcommands:
+      R1:
+        - ip route 10.80.1.0 255.255.255.0 10.122.1.1
+      R2:
+        - ip route 10.80.1.0 255.255.255.0 10.122.1.1
+      R3:
+        - ip route 10.80.1.0 255.255.255.0 10.122.1.1
+      all:
+        - ip domain-name domain.loc
+        - no logging console
+        - aaa new-model
+        - aaa authentication login default local
+        - aaa authorization exec default local
+        - enable password cisco
+        - username root privilege 15 password cisco
+        - line vty 0 4
+        - transport input all
+        - logging synchronous
+        - line con 0
+        - logging synchronous
+        - crypto key generate rsa modulus 1024
+devices:
+  R1:
+    type: router
+    os: ios
+    platform: iosv
+    connections:
+      vty:
+        protocol: telnet
+        port: 42229
+        ip: 10.121.1.21
+  R2:
+    type: router
+    os: ios
+    platform: iosv
+    connections:
+      vty:
+        protocol: telnet
+        port: 37373
+        ip: 10.121.1.21
+  R3:
+    type: router
+    os: ios
+    platform: iosv
+    connections:
+      vty:
+        protocol: telnet
+        port: 55221
+        ip: 10.121.1.21
+topology:
+  R1:
+    interfaces:
+      Gi0/0:
+        type: ethernet
+        ipv4: 192.168.101.1/24
+        link: Net_1
+      Gi0/3:
+        type: ethernet
+        ipv4: 10.122.105.1/16
+        link: Net_3
+        description: "Management Interface"
+  R2:
+    interfaces:
+      Gi0/0:
+        type: ethernet
+        ipv4: 192.168.101.2/24
+        link: Net_1
+      Gi0/1:
+        type: ethernet
+        ipv4: 192.168.103.2/24
+        link: Net_2
+      Gi0/3:
+        type: ethernet
+        ipv4: 10.122.105.2/16
+        link: Net_3
+        description: "Management Interface"
+  R3:
+    interfaces:
+      Gi0/0:
+        type: ethernet
+        ipv4: 192.168.103.3/24
+        link: Net_2
+      Gi0/3:
+        type: ethernet
+        ipv4: 10.122.105.3/16
+        link: Net_3
+        description: "Management Interface"
