@@ -170,10 +170,9 @@ class EveUnl:
 class EveNgLab:
     """ Get some information about lab from unl file and processes in EVE-NG """
 
-    def __init__(self, unl_file, eve_ip_host='', eve_ssh_username='root', eve_ssh_password='cisco', file_config='eveng.cfg'):
+    def __init__(self, unl_file, eve_ip_host='', eve_ssh_username='root', eve_ssh_password='cisco'):
         self.__template_list = ['csr1000vng', 'xrv', 'vios']
         self.__unl_file = unl_file
-        self.__file_config = file_config
         self.__eveng_conn_param = dict()
         self.__eveng_conn_param['ip'] = eve_ip_host
         self.__eveng_conn_param['device_type'] = "linux"
@@ -374,6 +373,7 @@ class TestbedConf:
     """ Configure nodes using module pyaty/genie """
 
     def __init__(self, file_testbed):
+        self.__file_testbed = file_testbed
         self.__testbed = testbed.load(file_testbed)
         self.__init_exec_commands = []
         self.__log_stdout = False
@@ -397,7 +397,6 @@ class TestbedConf:
             dev.configure(self.__testbed.custom.postcommands['all'], timeout=60)
             dev.configure(self.__testbed.custom.postcommands[dev.name], timeout=60)
             dev.execute("wr mem")
-            # dev.disconnect()
         # for conn in dev.connectionmgr.connections.values():
         #     conn.disconnect()
         dev.connectionmgr.connections.clear()
@@ -405,5 +404,5 @@ class TestbedConf:
     def run_testbed(self):
         self.__logger.info(f'Run Testing of configuration')
         file_path = "evenglibv2/evetestbed.py"
-        call(["python3", file_path])
+        call(["python3", file_path,  "--testbed", self.__file_testbed])
         return 0

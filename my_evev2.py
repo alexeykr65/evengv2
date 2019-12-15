@@ -14,20 +14,20 @@ unl_file = "lab_testbed"
 eve_ng_ip_host = "10.121.1.21"
 eve_ng_ssh_username = "root"
 eve_ng_ssh_password = "cisco"
-config_file = "my_eveng.cfg"
-ip_mgm_gw = "10.80.1.0 255.255.255.0 10.122.1.1"
+testbed_file = "testbed_eveng.yaml"
+conf_int_lab = "nod_network.yml"
 
 
 def main():
     # logging_file = "eveng-configure.log"
-    ev = evng.EveNgLab(unl_file=unl_file, eve_ip_host=eve_ng_ip_host, eve_ssh_username=eve_ng_ssh_username, eve_ssh_password=eve_ng_ssh_password, file_config=config_file)
+    ev = evng.EveNgLab(unl_file=unl_file, eve_ip_host=eve_ng_ip_host, eve_ssh_username=eve_ng_ssh_username, eve_ssh_password=eve_ng_ssh_password)
     ev.get_remote_unl_file()
-    ev.load_config_yaml("nod_network.yml")
+    ev.load_config_yaml(conf_int_lab)
     ev.get_proc_param()
-    ev.create_tbd_file('testbed_eveng.yaml')
+    ev.create_tbd_file(testbed_file)
     ev.create_ansible_file()
-    tbd = evng.TestbedConf('testbed_eveng.yaml')
-    tbd.execute_testbed()
+    tbd = evng.TestbedConf(testbed_file)
+    # tbd.execute_testbed()
     tbd.run_testbed()
 
 

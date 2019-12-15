@@ -12,14 +12,12 @@
 #   short script designed to be run with a datafile
 #   (notice many expected values/parameters undefined)
 import logging
-import coloredlogs
 from pyats import aetest
 from genie import testbed as tbd
 from genie.conf import Genie
 import argparse
 from pyats.log.utils import banner
 import re
-logger = logging.getLogger(__name__)
 
 
 class common_setup(aetest.CommonSetup):
@@ -89,11 +87,9 @@ class TestConfEveNG(aetest.Testcase):
                     )
 
 
-def eveng_testbed():
-    # testbed_file = "/Users/alex/Dropbox/MyProg/Python/evengv2/testbed_eveng.yaml"
-    testbed_file = "testbed_eveng.yaml"
-    aetest.main(testbed=Genie.init(testbed_file))
-
-
 if __name__ == '__main__':
-    eveng_testbed()
+    logger = logging.getLogger(__name__)
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--testbed', dest='testbed_file', type=str, default='')
+    args = parser.parse_args()
+    aetest.main(testbed=Genie.init(args.testbed_file))
