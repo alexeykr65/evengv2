@@ -25,9 +25,10 @@ import pexpect
 import xmltodict
 import runpy
 from subprocess import call
-#from pyats import aetest
+from pyats import aetest
+from pyats.log.utils import banner
 #from genie import testbed as tbd
-#from genie.conf import Genie
+from genie.conf import Genie
 from genie import testbed
 from netaddr import IPNetwork
 from jinja2 import Template, Environment, FileSystemLoader
@@ -338,13 +339,6 @@ class EveNgLab:
         env.filters['ipaddr'] = self.ipaddr
         template = env.get_template(tmp_name_file)
         output = template.render(unl_param=self.__lab_param, eve_ng_ip_host=self.__eveng_conn_param['ip'])
-        # env = Environment(loader=file_loader)
-        # env = Environment()
-        # env.filters['ipaddr'] = self.ipaddr
-        # with open(tmp_name_file) as file_:
-        #     self.template = Template(file_.read(), trim_blocks=True, lstrip_blocks=True)
-        # self.template.environment.filters["ipaddr"] = self.ipaddr
-        #output = template.render(unl_param=self.__lab_param, eve_ng_ip_host=self.__eveng_conn_param['ip'])
         with open(out_file, mode='w') as file_:
             file_.write(output)
 
@@ -404,5 +398,6 @@ class TestbedConf:
     def run_testbed(self):
         self.__logger.info(f'Run Testing of configuration')
         file_path = "evenglibv2/evetestbed.py"
-        call(["python3", file_path,  "--testbed", self.__file_testbed])
+        aetest.main(testable=file_path, testbed=Genie.init(self.__file_testbed), logger=self.__logger)
+        #call(["python3", file_path,  "--testbed", self.__file_testbed])
         return 0

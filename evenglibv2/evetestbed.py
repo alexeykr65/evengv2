@@ -12,12 +12,10 @@
 #   short script designed to be run with a datafile
 #   (notice many expected values/parameters undefined)
 import logging
-from pyats import aetest
-from genie import testbed as tbd
-from genie.conf import Genie
-import argparse
-from pyats.log.utils import banner
 import re
+from pyats import aetest
+
+logger = logging.getLogger(__name__)
 
 
 class common_setup(aetest.CommonSetup):
@@ -66,30 +64,17 @@ class TestConfEveNG(aetest.Testcase):
 
     @aetest.test
     def ping(self, steps, testbed, dev_dest_ip, dev_router, ):
+        # name = f'!!!!!!!!!!!!!!!!!!!!!! {dev_router.name}'
+        # uid = f'!!!!!!!!!!!!!!!!!!!!!! {dev_router.name}'
         for dst in dev_dest_ip[dev_router.name]:
             with steps.start(f'Ping from {dev_router.name} to IP: {dst}'):
                 try:
                     result = dev_router.ping(dst)
                 except Exception as e:
-                    self.failed('Ping {} from device {} failed with error: {}'.format(
-                        dst,
-                        dev_router.name,
-                        str(e)
-                    ))
+                    self.failed()
+                    #self.failed('Ping {} from device {} failed '.format(dst, dev_router.name))
+                    #with error: {}
+                    pass
                 else:
                     match = re.search(r'Success rate is (?P<rate>\d+) percent', result)
                     success_rate = match.group('rate')
-                    logger.info(banner('Ping {} with success rate of {}%'.format(
-                        dst,
-                        success_rate,
-                    )
-                    )
-                    )
-
-
-if __name__ == '__main__':
-    logger = logging.getLogger(__name__)
-    parser = argparse.ArgumentParser()
-    parser.add_argument('--testbed', dest='testbed_file', type=str, default='')
-    args = parser.parse_args()
-    aetest.main(testbed=Genie.init(args.testbed_file))

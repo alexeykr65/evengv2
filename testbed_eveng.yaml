@@ -21,7 +21,7 @@ testbed:
         - username root privilege 15 password cisco
         - line vty 0 4
         - transport input all
-        - logging synchronous      
+        - logging synchronous
         - line con 0
         - logging synchronous
         - crypto key generate rsa modulus 1024
@@ -33,7 +33,7 @@ devices:
     connections:
       vty:
         protocol: telnet
-        port: 39177
+        port: 33751
         ip: 10.121.1.21
   R2:
     type: router
@@ -42,7 +42,7 @@ devices:
     connections:
       vty:
         protocol: telnet
-        port: 59723
+        port: 57023
         ip: 10.121.1.21
   R3:
     type: router
@@ -51,11 +51,11 @@ devices:
     connections:
       vty:
         protocol: telnet
-        port: 47489
+        port: 49529
         ip: 10.121.1.21
 topology:
   R1:
-    interfaces:  
+    interfaces:
       Gi0/0:
         type: ethernet
         ipv4: 192.168.101.1/24
@@ -66,7 +66,7 @@ topology:
         link: Net_3
         description: "Management Interface"
   R2:
-    interfaces:  
+    interfaces:
       Gi0/0:
         type: ethernet
         ipv4: 192.168.101.2/24
@@ -81,7 +81,7 @@ topology:
         link: Net_3
         description: "Management Interface"
   R3:
-    interfaces:  
+    interfaces:
       Gi0/0:
         type: ethernet
         ipv4: 192.168.103.3/24
