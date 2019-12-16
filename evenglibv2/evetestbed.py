@@ -37,7 +37,10 @@ class common_setup(aetest.CommonSetup):
         dev_connected = list()
         for dev_name in testbed.devices.values():
             with steps.start(f'Connect to  {dev_name.name}'):
-                dev_name.connect(init_exec_commands=[], log_stdout=False)
+                try:
+                    dev_name.connect(init_exec_commands=[], log_stdout=False)
+                except Exception as e:
+                    self.failed()
             dev_connected.append(dev_name)
         testscript.parameters['dev_conn'] = dev_connected
 
@@ -63,17 +66,18 @@ class TestConfEveNG(aetest.Testcase):
         aetest.loop.mark(self.ping, dev_router=dev_conn)
 
     @aetest.test
-    def ping(self, steps, testbed, dev_dest_ip, dev_router, ):
+    def ping(self, steps, testbed, dev_dest_ip, dev_router, section):
         # name = f'!!!!!!!!!!!!!!!!!!!!!! {dev_router.name}'
-        # uid = f'!!!!!!!!!!!!!!!!!!!!!! {dev_router.name}'
+        # section.uid = f'Check_Ping_From_{dev_router.name}'
         for dst in dev_dest_ip[dev_router.name]:
             with steps.start(f'Ping from {dev_router.name} to IP: {dst}'):
+                # logger.info("test section: %s in testcase %s" % (section.uid, self.uid))
                 try:
                     result = dev_router.ping(dst)
                 except Exception as e:
                     self.failed()
-                    #self.failed('Ping {} from device {} failed '.format(dst, dev_router.name))
-                    #with error: {}
+                    # self.failed('Ping {} from device {} failed '.format(dst, dev_router.name))
+                    # with error: {}
                     pass
                 else:
                     match = re.search(r'Success rate is (?P<rate>\d+) percent', result)

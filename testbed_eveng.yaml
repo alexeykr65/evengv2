@@ -9,6 +9,7 @@ testbed:
         - ip route 10.80.1.0 255.255.255.0 10.122.1.1
       R2:
         - ip route 10.80.1.0 255.255.255.0 10.122.1.1
+        - ip route 192.168.200.0 255.255.255.0 10.122.1.2
       R3:
         - ip route 10.80.1.0 255.255.255.0 10.122.1.1
       all:
@@ -21,7 +22,7 @@ testbed:
         - username root privilege 15 password cisco
         - line vty 0 4
         - transport input all
-        - logging synchronous
+        - logging synchronous      
         - line con 0
         - logging synchronous
         - crypto key generate rsa modulus 1024
@@ -55,7 +56,7 @@ devices:
         ip: 10.121.1.21
 topology:
   R1:
-    interfaces:
+    interfaces:  
       Gi0/0:
         type: ethernet
         ipv4: 192.168.101.1/24
@@ -66,7 +67,7 @@ topology:
         link: Net_3
         description: "Management Interface"
   R2:
-    interfaces:
+    interfaces:  
       Gi0/0:
         type: ethernet
         ipv4: 192.168.101.2/24
@@ -81,7 +82,7 @@ topology:
         link: Net_3
         description: "Management Interface"
   R3:
-    interfaces:
+    interfaces:  
       Gi0/0:
         type: ethernet
         ipv4: 192.168.103.3/24

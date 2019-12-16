@@ -20,23 +20,17 @@ import netmiko as nm
 import coloredlogs
 import warnings
 import logging
-import sys
-import pexpect
 import xmltodict
-import runpy
-from subprocess import call
 from pyats import aetest
-from pyats.log.utils import banner
-#from genie import testbed as tbd
-from genie.conf import Genie
+from pyats.topology import loader
 from genie import testbed
 from netaddr import IPNetwork
-from jinja2 import Template, Environment, FileSystemLoader
 warnings.filterwarnings(action='ignore', module='.*paramiko.*')
 
 
 class MyLogging:
-    """ For logging configuration 
+    """
+For logging configuration
     """
 
     def __init__(self, level, log_name):
@@ -371,7 +365,7 @@ class TestbedConf:
         self.__testbed = testbed.load(file_testbed)
         self.__init_exec_commands = []
         self.__log_stdout = False
-        #self.__init_conf_commands = []
+        # self.__init_conf_commands = []
         self.__lg = MyLogging(logging.INFO, "TestbedConf")
         self.__logger = self.__lg.get_color_logger()
         self.__logger.info(f'Initialized class TestbedConf')
@@ -398,6 +392,6 @@ class TestbedConf:
     def run_testbed(self):
         self.__logger.info(f'Run Testing of configuration')
         file_path = "evenglibv2/evetestbed.py"
-        aetest.main(testable=file_path, testbed=Genie.init(self.__file_testbed), logger=self.__logger)
-        #call(["python3", file_path,  "--testbed", self.__file_testbed])
-        return 0
+        # aetest.main(testable=file_path, testbed=Genie.init(self.__file_testbed), logger=self.__logger)
+        testbed = loader.load(self.__file_testbed)
+        aetest.main(testable=file_path, testbed=testbed, logger=self.__logger)

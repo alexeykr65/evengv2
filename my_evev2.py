@@ -18,7 +18,6 @@ conf_int_lab = "nod_network.yml"
 
 
 def main():
-    logging_file = "eveng-configure.log"
     ev = evng.EveNgLab(unl_file=unl_file, eve_ip_host=eve_ng_ip_host, eve_ssh_username=eve_ng_ssh_username, eve_ssh_password=eve_ng_ssh_password)
     ev.get_remote_unl_file()
     ev.load_config_yaml(conf_int_lab)
