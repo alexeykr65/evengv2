@@ -25,6 +25,7 @@ from pyats import aetest
 from pyats.topology import loader
 from genie import testbed
 from netaddr import IPNetwork
+from jinja2 import Template, Environment, FileSystemLoader
 warnings.filterwarnings(action='ignore', module='.*paramiko.*')
 
 
