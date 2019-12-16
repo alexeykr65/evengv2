@@ -1,0 +1,7 @@
+paramiko
+scp
+netmiko
+coloredlogs
+xmltodict
+pyats
+genie
