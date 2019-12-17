@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Configure S-Terra
+# Configure EVE-NG labs
 #
 # alexeykr@gmail.com
 # coding=utf-8
