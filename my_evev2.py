@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Configure S-Terra
+# Example script for initialize EVE-NG
 #
 # alexeykr@gmail.com
 # coding=utf-8

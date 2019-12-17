@@ -1,16 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# Configure S-Terra
+# Configure Cisco PyAts.aetest for virify links
 #
 # alexeykr@gmail.com
 # coding=utf-8
 # import codecs
-# Example
-# -------
-#
-#   short script designed to be run with a datafile
-#   (notice many expected values/parameters undefined)
 import logging
 import re
 from pyats import aetest
