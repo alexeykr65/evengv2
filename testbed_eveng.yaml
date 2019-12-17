@@ -33,7 +33,7 @@ devices:
     connections:
       vty:
         protocol: telnet
-        port: 33751
+        port: 48633
         ip: 10.121.1.21
   R2:
     type: router
@@ -42,7 +42,7 @@ devices:
     connections:
       vty:
         protocol: telnet
-        port: 57023
+        port: 41051
         ip: 10.121.1.21
   R3:
     type: router
@@ -51,7 +51,7 @@ devices:
     connections:
       vty:
         protocol: telnet
-        port: 49529
+        port: 45783
         ip: 10.121.1.21
 topology:
   R1:

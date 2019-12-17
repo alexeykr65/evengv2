@@ -19,18 +19,6 @@ logger = logging.getLogger(__name__)
 
 
 class common_setup(aetest.CommonSetup):
-    """ Common Setup section """
-    @aetest.subsection
-    def check_topology_links(self, testscript, testbed):
-        dev_links = dict()
-        for dev_first in testbed.devices.values():
-            dev_links[dev_first.name] = list()
-            for dev_sec in testbed.devices.values():
-                if dev_first != dev_sec:
-                    links = dev_first.find_links(dev_sec)
-                    dev_links[dev_first.name].append(links)
-        testscript.parameters['dev_links'] = dev_links
-
     @aetest.subsection
     def establish_connections(self, steps, testscript, testbed):
         """ Common Setup subsection """
@@ -48,36 +36,31 @@ class common_setup(aetest.CommonSetup):
 class TestConfEveNG(aetest.Testcase):
 
     @aetest.setup
-    def collects_ip_ping(self, testbed, testscript, dev_links, dev_conn):
-        dev_dest_ip = dict()
-        for name in dev_links:
-            dev_dest_ip[name] = list()
-            for rt in testbed.custom.postcommands[name]:
-                if re.search('ip\s*route', rt):
+    def find_ip_to_ping(self, testbed, testscript, dev_conn):
+        dest_ping = dict()
+        for dev in testbed.devices.values():
+            dest_ping[dev.name] = list()
+            for intf in dev:
+                for remote_dev in intf.remote_devices:
+                    remote_net = [remote_dev.interfaces[lnk].ipv4 for lnk in remote_dev.interfaces if remote_dev.interfaces[lnk].link.name == intf.link.name]
+                    assert len(remote_net) == 1, f'ip on interface more one'
+                    remote_ip = remote_net[0].ip
+                    dest_ping[dev.name].append(remote_ip)
+            for rt in testbed.custom.postcommands[dev.name]:
+                if re.search(r'ip\s*route', rt):
                     routes = rt.split()[4]
-                    dev_dest_ip[name].append(routes)
-                    # print(rt.split()[4])
-            for links in dev_links[name]:
-                for lnk in links:
-                    for intf in lnk.interfaces:
-                        if str(intf.ipv4.ip) not in dev_dest_ip[name]:
-                            dev_dest_ip[name].append(str(intf.ipv4.ip))
-        testscript.parameters['dev_dest_ip'] = dev_dest_ip
+                    dest_ping[dev.name].append(routes)
+        testscript.parameters['dest_ping'] = dest_ping
         aetest.loop.mark(self.ping, dev_router=dev_conn)
 
     @aetest.test
-    def ping(self, steps, testbed, dev_dest_ip, dev_router, section):
-        # name = f'!!!!!!!!!!!!!!!!!!!!!! {dev_router.name}'
-        # section.uid = f'Check_Ping_From_{dev_router.name}'
-        for dst in dev_dest_ip[dev_router.name]:
+    def ping(self, steps, testbed, dev_router, section, dest_ping):
+        for dst in dest_ping[dev_router.name]:
             with steps.start(f'Ping from {dev_router.name} to IP: {dst}'):
-                # logger.info("test section: %s in testcase %s" % (section.uid, self.uid))
                 try:
                     result = dev_router.ping(dst)
                 except Exception as e:
                     self.failed()
-                    # self.failed('Ping {} from device {} failed '.format(dst, dev_router.name))
-                    # with error: {}
                     pass
                 else:
                     match = re.search(r'Success rate is (?P<rate>\d+) percent', result)
