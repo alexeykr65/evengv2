@@ -1,6 +1,6 @@
-# Libs for Configure EVE-NG Labs using Cisco PyAts and my lib.
+# Initial Configuration EVE-NG Labs using Cisco PyAts and my libs.
 
-Script for configure EVE-NG Labs, using Cisco PyAts, Genie.
+Script for initial configure EVE-NG Labs, using Cisco PyAts, Genie.
 Example map:
 ![Map_Network](http://alexcisco.com/wp-content/uploads/2019/12/eveng_configuration_1.png)
 
