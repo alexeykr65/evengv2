@@ -21,6 +21,9 @@ import coloredlogs
 import warnings
 import logging
 import xmltodict
+import os
+import multiprocessing as mp
+from functools import partial
 from pyats import aetest
 from pyats.topology import loader
 from genie import testbed
@@ -371,24 +374,31 @@ class TestbedConf:
         self.__logger = self.__lg.get_color_logger()
         self.__logger.info(f'Initialized class TestbedConf')
 
+    def execute_in_fork(self, dev):
+        proc = os.getpid()
+        self.__logger.info(f'Process pid: {proc} Connected to hostname: {dev.name}')
+        dev.connect(init_exec_commands=self.__init_exec_commands, log_stdout=self.__log_stdout)
+        assert dev.connected
+        for int_name in dev.interfaces:
+            dev_int = dev.interfaces[int_name]
+            self.__logger.info(f'Host: {dev.name} Int: {int_name} ipv4: {dev_int.ipv4}')
+            dev_int.build_config(apply=True)
+        dev.configure(f'hostname {dev.name}')
+        dev.configure(self.__testbed.custom.postcommands['all'], timeout=60)
+        dev.configure(self.__testbed.custom.postcommands[dev.name], timeout=60)
+        dev.execute("wr mem")
+        dev.disconnect()
+
     def execute_testbed(self):
+        jobs = []
         self.__logger.info(f'Configure devices ...')
         for dev_name in self.__testbed.devices:
             dev = self.__testbed.devices[dev_name]
-            self.__logger.info(f'Device: {dev.name}  OS: {dev.os}')
-            dev.connect(init_exec_commands=self.__init_exec_commands, log_stdout=self.__log_stdout)
-            assert dev.connected
-            for int_name in dev.interfaces:
-                dev_int = dev.interfaces[int_name]
-                self.__logger.info(f'Name_int: {int_name} ipv4: {dev_int.ipv4}')
-                dev_int.build_config(apply=True)
-            dev.configure(f'hostname {dev.name}')
-            dev.configure(self.__testbed.custom.postcommands['all'], timeout=60)
-            dev.configure(self.__testbed.custom.postcommands[dev.name], timeout=60)
-            dev.execute("wr mem")
-        # for conn in dev.connectionmgr.connections.values():
-        #     conn.disconnect()
-        dev.connectionmgr.connections.clear()
+            p = mp.Process(target=self.execute_in_fork, args=(dev,))
+            jobs.append(p)
+            p.start()
+        for pr in jobs:
+            pr.join()
 
     def run_testbed(self):
         self.__logger.info(f'Run Testing of configuration')

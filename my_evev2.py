@@ -25,7 +25,7 @@ def main():
     # ev.create_tbd_file(testbed_file)
     # ev.create_ansible_file()
     tbd = evng.TestbedConf(testbed_file)
-    # tbd.execute_testbed()
+    tbd.execute_testbed()
     tbd.run_testbed()
 
 
