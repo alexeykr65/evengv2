@@ -9,6 +9,7 @@
 import logging
 import re
 from pyats import aetest
+import multiprocessing
 
 logger = logging.getLogger(__name__)
 

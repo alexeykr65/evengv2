@@ -19,13 +19,13 @@ conf_int_lab = "nod_network.yml"
 
 def main():
     ev = evng.EveNgLab(unl_file=unl_file, eve_ip_host=eve_ng_ip_host, eve_ssh_username=eve_ng_ssh_username, eve_ssh_password=eve_ng_ssh_password)
-    ev.get_remote_unl_file()
-    ev.load_config_yaml(conf_int_lab)
-    ev.get_proc_param()
-    ev.create_tbd_file(testbed_file)
-    ev.create_ansible_file()
+    # ev.get_remote_unl_file()
+    # ev.load_config_yaml(conf_int_lab)
+    # ev.get_proc_param()
+    # ev.create_tbd_file(testbed_file)
+    # ev.create_ansible_file()
     tbd = evng.TestbedConf(testbed_file)
-    tbd.execute_testbed()
+    # tbd.execute_testbed()
     tbd.run_testbed()
 
 
